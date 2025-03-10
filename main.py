@@ -34,6 +34,25 @@ def main(stdscr):
                 text,
             ]
 
+        def repain_text(text: str):
+            for i, char in enumerate(text):
+                color = curses.color_pair(3)
+                inp = list(input)
+                for j, char_input in enumerate(inp):
+                    if j == i:
+                        if char_input == char:
+                            color = curses.color_pair(1)
+                        else:
+                            color = curses.color_pair(2)
+                        break
+                    else:
+                        color = curses.color_pair(4)
+                if char == " ":
+                    char = "•"
+
+                stdscr.addstr(y + 1, *get_x(char, i, text), color)
+                stdscr.refresh()
+
         text = text_generator()
         words = len(text.split(" "))
         counter = 0
@@ -71,24 +90,7 @@ def main(stdscr):
                     stdscr.addstr(y, *get_x(f"{counter}/{words}"))
                 stdscr.addstr(y, *get_x(f"{counter}/{words}"))
 
-            stdscr.addstr(y, *get_x(f"{counter}/{words}"))
-            for i, char in enumerate(text):
-                color = curses.color_pair(3)
-                inp = list(input)
-                for j, char_input in enumerate(inp):
-                    if j == i:
-                        if char_input == char:
-                            color = curses.color_pair(1)
-                        else:
-                            color = curses.color_pair(2)
-                        break
-                    else:
-                        color = curses.color_pair(4)
-                if char == " ":
-                    char = "•"
-
-                stdscr.addstr(y + 1, *get_x(char, i, text), color)
-                stdscr.refresh()
+            repain_text(text)
 
         finish = time.time()
         times = finish - begin
