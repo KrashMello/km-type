@@ -74,6 +74,39 @@ def paint_counter(text: str, input: str):
     stdscr.addstr(y, *get_x(f"{counter}/{words}"))
 
 
+def show_result(times, input):
+    global words, text
+    stdscr.clear()
+    speed = words / times * 60
+    accuracy = 0 * 100
+    count_accuracy = 0
+    for i, char in enumerate(text):
+        if i < len(input) and char == input[i]:
+            count_accuracy += 1
+
+    accuracy = count_accuracy / len(text) * 100
+    stdscr.addstr(
+        y + 1,
+        *get_x(f"wpm {speed:.2f}"),
+    )
+    stdscr.addstr(
+        y + 2,
+        *get_x(f"acc {accuracy:.2f}"),
+    )
+    if input == text:
+        stdscr.addstr(
+            y + 3,
+            *get_x(f" characters {len(text)}/{count_accuracy}       time {times:.2f}"),
+        )
+    else:
+        stdscr.addstr(
+            y + 3,
+            *get_x(
+                f"Texto incorrecto.  characters {len(text)}/{count_accuracy}       time {times:.2f}"
+            ),
+        )
+
+
 def main(stdscr):
     global text, words, counter, current_word
     exit = ""
@@ -104,14 +137,8 @@ def main(stdscr):
         finish = time.time()
         times = finish - begin
 
-        if input == text:
-            speed = len(text.split(" ")) / times * 60
-            stdscr.addstr(
-                y + 3,
-                *get_x(f"velocidad: {speed:.2f} wpm"),
-            )
-        else:
-            stdscr.addstr(y + 3, *get_x("Texto incorrecto."))
+        show_result(times, input)
+
         counter = 0
         current_word = 0
         exit = chr(stdscr.getch())
